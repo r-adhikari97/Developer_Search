@@ -1,0 +1,14 @@
+{% extends "Main.html" %}
+
+{% block content %}
+<h1>Home Page</h1>
+<br>
+<body>
+    <ul>
+    {% for project in projects %}
+        <li> <a href = "Product/{{project.id}}">{{project.Title}}</a> ---> {{project.Description}}</li>
+    {% endfor %}
+    </ul>
+</body>
+
+{% endblock content %}
