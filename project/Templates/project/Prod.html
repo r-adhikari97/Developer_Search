@@ -5,9 +5,13 @@
 <h1> Product Page </h1>
 <br>
 <body>
-<h2>{{context.Title}}</h2>
+<h2>{{project.title}}</h2>
 <br>
-<p>{{context.Description}}</p>
+{% for i in tags %}
+    <span style="border:1px solid grey">{{i.name}}</span>
+{% endfor %}
+<br>
+<p>{{project.description}}</p>
 </body>
 
 

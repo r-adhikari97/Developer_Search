@@ -4,11 +4,24 @@
 <h1>Home Page</h1>
 <br>
 <body>
-    <ul>
+<table>
+    <tr>
+        <th>Project Name</th>
+        <th>Votes</th>
+        <th>View</th>
+        <th>Update</th>
+        <th>Delete</th>
+    </tr>
     {% for project in projects %}
-        <li> <a href = "Product/{{project.id}}">{{project.Title}}</a> ---> {{project.Description}}</li>
+        <tr>
+            <td>{{project.title}}</td>
+            <td>{{project.vote_total}}</td>
+            <td><a href = "Product/{{project.id}}">View</a></td>
+            <td><a href = "update-project/{{project.id}}">update</a></td>
+            <td><a href = "delete-project/{{project.id}}">delete</a></td>
+        </tr>
     {% endfor %}
-    </ul>
+</table>
 </body>
 
 {% endblock content %}
