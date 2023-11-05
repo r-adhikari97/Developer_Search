@@ -16,8 +16,13 @@
           <li class="header__menuItem"><a href="{% url 'Product' %}">Projects</a></li>
           <li class="header__menuItem"><a href="">Inbox</a></li>
           <li class="header__menuItem"><a href="">My Account</a></li>
+
+          {% if request.user.is_authenticated %}
             <li class="header__menuItem"><a href="{% url 'create-project'%}" class="btn btn--sub">Add Project</a></li>
-          <li class="header__menuItem"><a href="l" class="btn btn--sub">Login/Sign Up</a></li>
+            <li class="header__menuItem"><a href="{% url 'Logout' %}" class="btn btn--sub">Log Out</a></li>
+          {% else %}
+            <li class="header__menuItem"><a href="{% url 'Login' %}" class="btn btn--sub">Login/Sign Up</a></li>
+          {% endif %}
         </ul>
       </nav>
     </div>
@@ -33,4 +38,3 @@
 
 
 
-<
