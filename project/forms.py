@@ -6,11 +6,20 @@ class ProjectForm (ModelForm):
     class Meta:
         model = Project
         fields = ['title','featured_img','description','demo_link','source_link','tags']
+
+
         widgets = {
             'tags': forms.CheckboxSelectMultiple(),
         }
 
-    def __int__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(ProjectForm, self).__init__(*args, **kwargs)
 
-        self.fields['title'].widget.attrs.update({"class": "input"})
+        for mame, field in self.fields.items():
+            field.widget.attrs.update({'class':'input'})
+
+
+
+
+
+
