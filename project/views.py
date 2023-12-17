@@ -1,15 +1,29 @@
 from django.shortcuts import render,redirect
-
-from .models import  Project
+from .models import  Project , Tag
 from .forms import ProjectForm
 from django.contrib.auth.decorators import login_required
+from  django.db.models import Q
 
 
 # Create your views here.
 
 def Product(request):
-    project_List = Project.objects.all()
-    return render(request,'project/Home.html',{'projects': project_List})
+    search_query =""
+    if request.GET.get("search_query"):
+        search_query = request.GET.get("search_query")
+
+    # Searching via tags
+    Tags = Tag.objects.filter(name__icontains=search_query)
+
+    print(search_query)
+    project_List = Project.objects.distinct().filter(
+        Q(title__icontains= search_query) |
+        Q(owner__name__icontains= search_query) |
+        Q(tags__in=Tags)
+    )
+    return render(request,'project/Home.html',{'projects': project_List,
+                                               'search_query':search_query})
+
 
 def Products(request,pk):
     projectObj = Project.objects.get(id=pk)
