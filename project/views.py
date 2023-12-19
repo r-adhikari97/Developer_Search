@@ -1,38 +1,33 @@
-from django.shortcuts import render,redirect
-from .models import  Project , Tag
+from django.shortcuts import render, redirect
+from .models import Project
 from .forms import ProjectForm
 from django.contrib.auth.decorators import login_required
-from  django.db.models import Q
+# Util file
+from .utils import Projects_Home
 
 
 # Create your views here.
 
+# All Projects
 def Product(request):
-    search_query =""
-    if request.GET.get("search_query"):
-        search_query = request.GET.get("search_query")
 
-    # Searching via tags
-    Tags = Tag.objects.filter(name__icontains=search_query)
-
-    print(search_query)
-    project_List = Project.objects.distinct().filter(
-        Q(title__icontains= search_query) |
-        Q(owner__name__icontains= search_query) |
-        Q(tags__in=Tags)
-    )
-    return render(request,'project/Home.html',{'projects': project_List,
-                                               'search_query':search_query})
+    data = Projects_Home(request)
+    return render(request, 'project/Home.html', {'projects':data[0],
+                                                 'paginator':data[1],
+                                                 'custom_range':data[2],
+                                                 'search_query': data[3]
+                                                 })
 
 
-def Products(request,pk):
+# Specific Product
+def Products(request, pk):
     projectObj = Project.objects.get(id=pk)
     tags = projectObj.tags.all()
     if tags is None:
         print("NO TAGS")
     print(tags)
-    return render(request,"project/Prod.html",{'project': projectObj,
-                                               'tags':tags})
+    return render(request, "project/Prod.html", {'project': projectObj,
+                                                 'tags': tags})
 
 
 ############# C R U D ######################
@@ -45,30 +40,30 @@ def createProject(request):
     if request.method == "POST":
         form = ProjectForm(request.POST, request.FILES)
         if form.is_valid():
-            project = form.save(commit= False)
-            project.owner= profile
+            project = form.save(commit=False)
+            project.owner = profile
             project.save()
             return redirect('Product')
 
-    context = {'form':form}
-    return render(request,'project/project_form.html',context)
+    context = {'form': form}
+    return render(request, 'project/project_form.html', context)
 
 
 @login_required(login_url="Login")
-def updateProject(request,pk):
+def updateProject(request, pk):
     profile = request.user.profile
     project = profile.project_set.get(id=pk)
 
     form = ProjectForm(instance=project)
 
     if request.method == "POST":
-        form = ProjectForm(request.POST, request.FILES ,instance=project)
+        form = ProjectForm(request.POST, request.FILES, instance=project)
         if form.is_valid():
             form.save()
             return redirect('Product')
 
-    context = {'form':form}
-    return render(request,'project/project_form.html',context)
+    context = {'form': form}
+    return render(request, 'project/project_form.html', context)
 
 
 @login_required(login_url="Login")
@@ -77,5 +72,5 @@ def deleteProject(request, pk):
     project = profile.project_set.get(id=pk)
     if request.method == 'POST':
         project.delete()
-        return  redirect('Product')
-    return render(request,'Delete_template.html', {'obj':project})
+        return redirect('Product')
+    return render(request, 'Delete_template.html', {'obj': project})

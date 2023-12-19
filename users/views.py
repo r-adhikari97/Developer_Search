@@ -1,11 +1,12 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from .models import Profile, Skill
-from django.db.models import Q
+from .models import Profile
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import CustomUserCreation, ProfileForm, SkillForm
+# util file
+from .utils import Profile_Home
 
 
 # Create your views here.
@@ -101,19 +102,13 @@ def register_user(request):
 
 
 def profiles(request):
-    search_query = ""
-    if request.GET.get("search_query"):
-        search_query = request.GET.get("search_query")
-    print(search_query)
+    # Using Search_Profile Method
+    data = Profile_Home(request)
 
-    # Extracting skills
-    skills = Skill.objects.filter(name__icontains=search_query)
-
-    profiles = Profile.objects.distinct().filter(Q(name__icontains=search_query) |
-                                      Q(short_intro__icontains=search_query) |
-                                      Q(skill__in=skills))
-    context = {'profiles': profiles,
-               'search_query':search_query}
+    context = {'profiles': data[0],
+               'paginator':data[1],
+               'custom_url': data[2],
+               'search_query':data[3]}
     return render(request, 'users/profiles.html', context)
 
 

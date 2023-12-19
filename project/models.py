@@ -31,6 +31,11 @@ class Project(models.Model):
         return self.title
 
 
+    class Meta:
+        # Gives Youngest projects first
+        ordering = ['created']
+
+
 class Review(models.Model):
     VOTE_TYPE = (
         ('up', 'Up Vote'),

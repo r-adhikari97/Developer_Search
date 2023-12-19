@@ -1,30 +1,34 @@
-from .models import Skill, Profile
+from .models import Project, Tag
 from django.db.models import Q
 from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
 
-def SearchProfiles(request):
+
+#### Search Project Using Search Bar ###
+
+def Search_Project(request):
     search_query = ""
     if request.GET.get("search_query"):
         search_query = request.GET.get("search_query")
-    #print(search_query)
 
-    # Extracting skills
-    skills = Skill.objects.filter(name__icontains=search_query)
+    # Searching via tags
+    Tags = Tag.objects.filter(name__icontains=search_query)
 
-    profiles = Profile.objects.distinct().filter(Q(name__icontains=search_query) |
-                                                 Q(short_intro__icontains=search_query) |
-                                                 Q(skill__in=skills))
+    # Setting up Search Parameters
+    project_List = Project.objects.distinct().filter(
+        Q(title__icontains=search_query) |
+        Q(owner__name__icontains=search_query) |
+        Q(tags__in=Tags)
+    )
 
-    # Sending data as a list
-    data = [profiles,search_query]
+    # Sending a list of data back
+    data = [project_List,search_query]
 
     return data
 
 
-
-def Profile_Home(request):
+def Projects_Home(request):
     # Util Search Method
-    value = SearchProfiles(request)
+    value = Search_Project(request)
 
     # Setting Page, Results
     page = request.GET.get('page')
@@ -36,19 +40,19 @@ def Profile_Home(request):
     try:
 
         # Pagination based on Page Value
-        profiles = paginator.page(page)
+        projects = paginator.page(page)
 
     except PageNotAnInteger:
 
         # Entered Page is not an Integer
         page = 1
-        profiles = paginator.page(page)
+        projects = paginator.page(page)
 
     except EmptyPage:
 
         # Entered Page is Empty
         page = paginator.num_pages
-        profiles = paginator.page(page)
+        projects = paginator.page(page)
 
     leftIndex = (int(page) - 4)
 
@@ -63,6 +67,6 @@ def Profile_Home(request):
     # Custom range of Records / Pages to display
     custom_range = range(leftIndex, rightIndex)
 
-    data = [profiles,paginator,custom_range,value[0]]
+    data = [projects,paginator,custom_range,value[0]]
 
-    return data
+    return  data

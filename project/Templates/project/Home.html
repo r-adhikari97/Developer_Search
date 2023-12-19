@@ -58,8 +58,10 @@
         </div>
       </div>
     </section>
+
   </main>
 
+  {% include 'Pagination.html' with queryset=projects custom_range=custom_range %}
 <!--
             <td><a href = "Product/{{project.id}}">View</a></td>
             <td><a href = "update-project/{{project.id}}">update</a></td>
