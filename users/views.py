@@ -1,5 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_protect
+
 from .models import Profile
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -76,6 +78,7 @@ def LogoutUser(request):
     return redirect('Login')
 
 
+@csrf_protect
 def register_user(request):
     page = "Register"
     form = CustomUserCreation()

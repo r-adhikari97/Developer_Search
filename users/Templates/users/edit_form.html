@@ -10,6 +10,7 @@
                 <br>
 
                 <form action="{% url 'Edit_Profile' %}" method="POST" enctype="multipart/form-data" >
+                    {% csrf_token %}
                     <!-- Input:Text -->
                     {% for field in form %}
                         <div class="form__field">

@@ -26,14 +26,31 @@ class Project(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True,
                           primary_key=True, editable=False)
 
-    
+
     def __str__(self):
         return self.title
 
 
     class Meta:
         # Gives Youngest projects first
-        ordering = ['created']
+        ordering = ['-vote_ratio','-vote_total','title']
+
+    @property
+    def getVoteCount(self):
+        reviews = self.review_set.all()
+        upVotes = reviews.filter(value='up').count()
+        totalVotes = reviews.count()
+
+        ratio = (upVotes/totalVotes)*100
+        self.vote_total = totalVotes
+        self.vote_ratio = ratio
+        self.save()
+
+    @property
+    def reviewers(self):
+        queryset = self.review_set.all().value_list('owner__id',flat=True)
+        return  queryset
+
 
 
 class Review(models.Model):
@@ -55,6 +72,8 @@ class Review(models.Model):
     # Setting Unique values
     class Meta:
         unique_together = [['owner','project']]
+
+
 
     def __str__(self):
         return self.value

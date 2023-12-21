@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from .models import Project
-from .forms import ProjectForm
+from .forms import ProjectForm, ReviewForm
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 # Util file
 from .utils import Projects_Home
 
@@ -22,12 +23,30 @@ def Product(request):
 # Specific Product
 def Products(request, pk):
     projectObj = Project.objects.get(id=pk)
+    print(projectObj.id)
+
+    form = ReviewForm()
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        review = form.save(commit=False)
+        review.project = projectObj
+        review.owner =request.user.profile
+        review.save()
+
+        projectObj.getVoteCount
+
+        # Update Project Vote Count
+        messages.success(request,"Your Review is Submitted")
+        return redirect('Products',projectObj.id)
+
     tags = projectObj.tags.all()
     if tags is None:
         print("NO TAGS")
-    print(tags)
+    #print(tags)
     return render(request, "project/Prod.html", {'project': projectObj,
-                                                 'tags': tags})
+                                                 'tags': tags,
+                                                 'form':form
+                                                 })
 
 
 ############# C R U D ######################

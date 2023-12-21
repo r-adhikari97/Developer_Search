@@ -28,7 +28,7 @@ def Profile_Home(request):
 
     # Setting Page, Results
     page = request.GET.get('page')
-    print(page)
+    #print(page)
     results = 3
     paginator = Paginator(value[0], results)
 
