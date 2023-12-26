@@ -6,7 +6,7 @@ from .models import Profile,Message
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import CustomUserCreation, ProfileForm, SkillForm
+from .forms import CustomUserCreation, ProfileForm, SkillForm, MessageForm
 # util file
 from .utils import Profile_Home
 
@@ -190,6 +190,42 @@ def inbox(request):
 
 
 @login_required(login_url='Login')
-def viewMessage(request):
-    context = {}
-    return  render (request,'', context)
+def viewMessage(request, pk):
+    profile = request.user.profile
+    message = profile.messages.get(id=pk)
+
+    # Saves opened Message state
+    if not message.is_read:
+        message.is_read = True
+        message.save()
+
+    context = {'data':message}
+    return render(request,'users/message.html', context)
+
+
+
+def createMessageView(request,pk):
+    recipient = Profile.objects.get(id=pk)
+    form = MessageForm()
+
+    try :
+        sender = request.user.profile
+    except:
+        sender = None
+
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.sender = sender
+            message.recipient = recipient
+
+            if sender:
+                message.name = sender.name
+                message.email = sender.email
+            message.save()
+            messages.success(request,'Your Message was successfully sent !')
+            return redirect('user_profile', pk=recipient.id)
+
+    context = {'recipient':recipient, 'form':form}
+    return render(request, 'users/message_form.html' , context)
