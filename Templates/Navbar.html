@@ -14,12 +14,10 @@
         <ul class="header__menu">
           <li class="header__menuItem"><a href="{% url 'profiles' %}">Developers</a></li>
           <li class="header__menuItem"><a href="{% url 'Product' %}">Projects</a></li>
-          <li class="header__menuItem"><a href="">Inbox</a></li>
 
 
           {% if request.user.is_authenticated %}
-
-            <li class="header__menuItem"><a href="{% url 'Profile'/{{profile.id}}">My Account</a></li>
+            <li class="header__menuItem"><a href="{% url 'Inbox' %}">Inbox</a></li>
             <li class="header__menuItem"><a href="{% url 'Account' %}" class="btn btn--sub">My Profile</a></li>
             <li class="header__menuItem"><a href="{% url 'Logout' %}" class="btn btn--sub">Log Out</a></li>
           {% else %}

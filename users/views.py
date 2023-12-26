@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
 
-from .models import Profile
+from .models import Profile,Message
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -65,7 +65,7 @@ def LoginUser(request):
 
         if user is not None:
             login(request, user)
-            return redirect('profiles')
+            return redirect(request.GET['next'] if 'next'in request.GET else 'Account')
         else:
             messages.error(request, "Username or Password is incorrect")
 
@@ -175,3 +175,21 @@ def deleteSkill(request,pk):
 
     context = {'obj':skill}
     return render(request, 'Delete_template.html', context)
+
+
+############# I N B O X #################
+@login_required(login_url='Login')
+def inbox(request):
+    profile = request.user.profile
+    messageReq = profile.messages.all()
+    print(messageReq)
+    un_readCount = messageReq.filter(is_read=False).count()
+    context = {'msgReq':messageReq,
+               'un_Read_Count': un_readCount}
+    return render(request,'users/inbox.html',context)
+
+
+@login_required(login_url='Login')
+def viewMessage(request):
+    context = {}
+    return  render (request,'', context)
