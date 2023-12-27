@@ -9,6 +9,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('projects/',include("project.urls")),
     path('',include('users.urls')),
+    path('api/',include('API.urls'))
 ]
 
 urlpatterns += static(settings.MEDIA_URL,
