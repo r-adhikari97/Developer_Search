@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Project
+from .models import Project, Tag
 from .forms import ProjectForm, ReviewForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -54,6 +54,9 @@ def Products(request, pk):
 @login_required(login_url="Login")
 def createProject(request):
     profile = request.user.profile
+    newTags = request.POST.get('newtags').replace(',', '').split()
+    print("DATA: ", newTags)
+
     form = ProjectForm()
 
     if request.method == "POST":
@@ -62,6 +65,12 @@ def createProject(request):
             project = form.save(commit=False)
             project.owner = profile
             project.save()
+
+            # Adding Tags
+            for tag in newTags:
+                tag, created = Tag.objects.get_or_create(name=tag)
+                project.tags.add(tag)
+
             return redirect('Product')
 
     context = {'form': form}
@@ -76,10 +85,20 @@ def updateProject(request, pk):
     form = ProjectForm(instance=project)
 
     if request.method == "POST":
+        newTags = request.POST.get('newtags').replace(',','').split()
+        print("DATA: ", newTags)
+
+
         form = ProjectForm(request.POST, request.FILES, instance=project)
         if form.is_valid():
-            form.save()
+            project = form.save()
+            for tag in newTags:
+                tag, created = Tag.objects.get_or_create(name=tag)
+                project.tags.add(tag)
+
+            messages.success(request,"Project Updated Successfully !")
             return redirect('Product')
+
 
     context = {'form': form}
     return render(request, 'project/project_form.html', context)

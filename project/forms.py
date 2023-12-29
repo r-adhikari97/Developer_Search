@@ -5,7 +5,7 @@ from .models import Project, Review
 class ProjectForm (ModelForm):
     class Meta:
         model = Project
-        fields = ['title','featured_img','description','demo_link','source_link','tags']
+        fields = ['title','featured_img','description','demo_link','source_link']
 
 
         widgets = {
