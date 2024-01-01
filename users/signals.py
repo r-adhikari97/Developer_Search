@@ -20,16 +20,6 @@ def createProfile(sender, instance, created, **kwargs):
         )
         print("Profile Created!")
 
-        subject = "Welcome to DevSearch"
-        msg = "We are glad to have you!, Here's a Newbie list for you"
-
-        send_mail(
-            subject=subject,
-            message=msg,
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[profile.email],
-            fail_silently=False
-        )
 
 
 @receiver(post_save, sender=Profile)

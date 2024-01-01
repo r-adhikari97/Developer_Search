@@ -53,13 +53,16 @@ def Products(request, pk):
 
 @login_required(login_url="Login")
 def createProject(request):
-    profile = request.user.profile
-    newTags = request.POST.get('newtags').replace(',', '').split()
-    print("DATA: ", newTags)
 
+    profile = request.user.profile
     form = ProjectForm()
 
     if request.method == "POST":
+
+        # Checking Tags
+        newTags = request.POST.get('newtags').replace(',', '').split()
+        print("DATA: ", newTags)
+
         form = ProjectForm(request.POST, request.FILES)
         if form.is_valid():
             project = form.save(commit=False)

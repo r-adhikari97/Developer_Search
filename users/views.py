@@ -78,7 +78,7 @@ def LogoutUser(request):
     return redirect('Login')
 
 
-@csrf_protect
+
 def register_user(request):
     page = "Register"
     form = CustomUserCreation()
