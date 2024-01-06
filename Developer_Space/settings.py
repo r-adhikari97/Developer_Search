@@ -87,7 +87,7 @@ WSGI_APPLICATION = "Developer_Space.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 
-DATABASES = {
+"""DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": 'developerspace',
@@ -96,17 +96,17 @@ DATABASES = {
         'HOST':'localhost',
         'POST':'5432'
     }
-}
+}"""
 
 
 
 
-"""DATABASES = {
+DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
-}"""
+}
 
 
 # Password validation
